@@ -1,15 +1,15 @@
+import os
 import sys
 import numpy as np
 import pandas as pd
 from datetime import datetime, timedelta
+from github import Github
 from ..data_crawler.data_crawler import crawl_price_by_date
 
 def pr(x, population):
     return sum(population <= x) / sum(population.notnull())
 
 def hitstock(date_1, date_2, top_n=20):
-    # now = datetime.now().strftime('%Y%m%d')
-    # last_week = (datetime.now() - timedelta(days=7)).strftime('%Y%m%d')
     print("Let's Predit Hit Stock!!!")
     data_1 = crawl_price_by_date(date_1)
     data_2 = crawl_price_by_date(date_2)
@@ -32,9 +32,11 @@ def hitstock(date_1, date_2, top_n=20):
     for code, name in zip(top_n_list_code, top_n_list_name):
         top_n_str = top_n_str + code + ':' + name + '\n'
     
-    with open('./data/topn_stock_data/{}.txt'.format(date_2), 'w') as f:
-        f.write(top_n_str)
-    
+    g = Github(os.environ.get('GITHUB_TOKEN'))
+    repository = g.get_user().get_repo('StockSelector-Storage')
+    repository.create_file('stock_recommendation/{}.txt'.format(data_2), '{} update stock recommendation data'.format(data_2), top_n_str)
+    # with open('./data/topn_stock_data/{}.txt'.format(date_2), 'w') as f:
+    #     f.write(top_n_str)   
     print(top_n_str)
     print('Job Done!!!')
 
