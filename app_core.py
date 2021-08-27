@@ -27,7 +27,7 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def stock_recommendation(event):
-    with open('./data/topn_stock_data/20210823.txt', 'r') as f:
+    with open('./data/topn_stock_data/20210827.txt', 'r') as f:
         stock_data = f.read()
     line_bot_api.reply_message(
         event.reply_token,
