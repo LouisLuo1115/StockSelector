@@ -1,6 +1,7 @@
 from __future__ import unicode_literals
 import os
 from flask import Flask, request, abort
+from github import Github
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
@@ -8,8 +9,8 @@ from linebot.models import MessageEvent, TextMessage, TextSendMessage
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN'))
-os.environ.get('CHANNEL_SECRET')
 handler = WebhookHandler(os.environ.get('CHANNEL_SECRET'))
+
 
 
 @app.route("/callback", methods=['POST'])
@@ -28,8 +29,9 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def stock_recommendation(event):
-    with open('./data/topn_stock_data/20210827.txt', 'r') as f:
-        stock_data = f.read()
+    g = Github(os.environ.get('GITHUB_TOKEN'))
+    repository = g.get_user().get_repo('StockSelector-Storage')
+    stock_data = repository.get_contents('test/20210827.txt').decoded_content.decode()
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text='股神小新今天的通靈選股\n' + stock_data)
