@@ -34,7 +34,7 @@ def hitstock(date_1, date_2, top_n=20):
     
     g = Github(os.environ.get('GITHUB_TOKEN'))
     repository = g.get_user().get_repo('StockSelector-Storage')
-    repository.create_file('stock_recommendation/{}.txt'.format(data_2), '{} update stock recommendation data'.format(data_2), top_n_str)
+    repository.create_file('stock_recommendation/{}.txt'.format(date_2), '{} update stock recommendation data'.format(date_2), top_n_str)
     # with open('./data/topn_stock_data/{}.txt'.format(date_2), 'w') as f:
     #     f.write(top_n_str)   
     print(top_n_str)

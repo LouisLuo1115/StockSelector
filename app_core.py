@@ -31,7 +31,7 @@ def callback():
 def stock_recommendation(event):
     g = Github(os.environ.get('GITHUB_TOKEN'))
     repository = g.get_user().get_repo('StockSelector-Storage')
-    stock_data = repository.get_contents('test/20210827.txt').decoded_content.decode()
+    stock_data = repository.get_contents('stock_recommendation/20210827.txt').decoded_content.decode()
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text='股神小新今天的通靈選股\n' + stock_data)
