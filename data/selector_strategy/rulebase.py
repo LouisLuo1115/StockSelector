@@ -34,6 +34,7 @@ def hitstock(date_1, date_2, top_n=20):
     
     with open('./data/topn_stock_data/{}.txt'.format(date_2), 'w') as f:
         f.write(top_n_str)
+    
     print(top_n_str)
     print('Job Done!!!')
 
