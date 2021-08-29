@@ -1,5 +1,8 @@
 from __future__ import unicode_literals
 import os
+from datetime import datetime, timedelta
+from dateutil import tz
+from dateutil.tz import tzlocal
 from flask import Flask, request, abort
 from github import Github
 from linebot import LineBotApi, WebhookHandler
@@ -11,7 +14,9 @@ app = Flask(__name__)
 line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.environ.get('CHANNEL_SECRET'))
 
-
+from_zone = tz.gettz(datetime.now(tzlocal()).tzname())
+to_zone = tz.gettz('CST')
+date = datetime.today().replace(tzinfo=from_zone).astimezone(to_zone).strftime('%Y%m%d')
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -32,10 +37,12 @@ def stock_recommendation(event):
     g = Github(os.environ.get('GITHUB_TOKEN'))
     repository = g.get_user().get_repo('StockSelector-Storage')
     stock_data = repository.get_contents('stock_recommendation/20210827.txt').decoded_content.decode()
+    stock_data = repository.get_contents('stock_recommendation/{}.txt'.format(date)).decoded_content.decode()
     line_bot_api.reply_message(
         event.reply_token,
         TextSendMessage(text='股神小新今天的通靈選股\n' + stock_data)
     )
+
 
 if __name__ == "__main__":
     app.run()
