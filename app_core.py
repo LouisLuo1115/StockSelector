@@ -8,15 +8,14 @@ from github import Github
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+from .utilitylib.time_handler import timezone_handler, get_stock_date_handler
 
 app = Flask(__name__)
 
 line_bot_api = LineBotApi(os.environ.get('CHANNEL_ACCESS_TOKEN'))
 handler = WebhookHandler(os.environ.get('CHANNEL_SECRET'))
 
-from_zone = tz.gettz(datetime.now(tzlocal()).tzname())
-to_zone = tz.gettz('CST')
-date = datetime.today().replace(tzinfo=from_zone).astimezone(to_zone).strftime('%Y%m%d')
+date = timezone_handler(datetime.today(), 'CST')
 
 @app.route("/callback", methods=['POST'])
 def callback():
@@ -34,13 +33,13 @@ def callback():
 
 @handler.add(MessageEvent, message=TextMessage)
 def stock_recommendation(event):
+    get_stock_date = get_stock_date_handler(date)
     g = Github(os.environ.get('GITHUB_TOKEN'))
     repository = g.get_user().get_repo('StockSelector-Storage')
-    stock_data = repository.get_contents('stock_recommendation/20210827.txt').decoded_content.decode()
-    stock_data = repository.get_contents('stock_recommendation/{}.txt'.format(date)).decoded_content.decode()
+    stock_data = repository.get_contents('stock_recommendation/{}.txt'.format(get_stock_date)).decoded_content.decode()
     line_bot_api.reply_message(
         event.reply_token,
-        TextSendMessage(text='股神小新今天的通靈選股\n' + stock_data)
+        TextSendMessage(text='{}\n股神小新的通靈選股\n'.format(get_stock_date) + stock_data)
     )
 
 
