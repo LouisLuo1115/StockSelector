@@ -8,6 +8,7 @@ from github import Github
 from linebot import LineBotApi, WebhookHandler
 from linebot.exceptions import InvalidSignatureError
 from linebot.models import MessageEvent, TextMessage, TextSendMessage
+
 from utilitylib.time_handler import timezone_handler, get_stock_date_handler
 
 app = Flask(__name__)

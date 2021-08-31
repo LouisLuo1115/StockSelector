@@ -1,9 +1,9 @@
-from .selector_strategy.rulebase import hitstock
 from datetime import datetime, timedelta
 from dateutil import tz
 from dateutil.tz import tzlocal
 
-from ..utilitylib.time_handler import timezone_handler
+from data.selector_strategy.rulebase import hitstock
+from utilitylib.time_handler import timezone_handler
 
 if __name__ == "__main__":
     today = timezone_handler(datetime.today())
