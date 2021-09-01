@@ -10,7 +10,7 @@ def timezone_handler(timestamp, timezone='CST'):
     return timestamp
 
 def get_stock_date_handler(timestamp):
-    if timestamp.time < datetime.strptime('18:30',"%H:%M").time():
+    if timestamp.time() < datetime.strptime('18:30',"%H:%M").time():
         timestamp = timestamp - timedelta(days=1)
         
     if timestamp.weekday() < 5:
