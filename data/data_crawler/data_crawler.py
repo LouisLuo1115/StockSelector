@@ -27,18 +27,14 @@ def crawl_price_by_date(date):
 
 def crawl_indiv_stock_price_by_date(stock_number, date):
     url = (
-        "http://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date="+
-        date.strftime('%Y%m%d')+
-        "&stockNo="+
+        "http://www.twse.com.tw/exchangeReport/STOCK_DAY?response=json&date=" +
+        date.strftime('%Y%m%d') +
+        "&stockNo=" +
         str(stock_number)
     )
-    time.sleep(random.uniform(1.1, 5.5))
-    # headers = {'User-Agent': 'User-Agent:Mozilla/5.0'}
-    # data_1 = Request(url, headers=headers)
-    # data = json.loads(urlopen(data_1).read())
-
-    data = json.loads(urlopen(url).read())
-    print(date.strftime('%Y%m%d'))
+    res = requests.get(url)
+    data = res.json()
+    print(res)
     return pd.DataFrame(data['data'], columns=data['fields'])
 
 def crawl_indiv_stock_price_history(stock_number, start_month):
@@ -48,7 +44,7 @@ def crawl_indiv_stock_price_history(stock_number, start_month):
     result = pd.DataFrame()
     for dt in rrule.rrule(rrule.MONTHLY, dtstart=b_month, until=e_month):
         result = pd.concat([result, crawl_indiv_stock_price_by_date(stock_number, dt)], ignore_index=True)
-        time.sleep(random.uniform(0.1, 2.1))
+        time.sleep(10)
     
     return result
 
