@@ -49,6 +49,6 @@ def crawl_indiv_stock_price_history(stock_number, start_month):
     return result
 
 if __name__ == "__main__":
-    df = crawl_price_by_date(20210805)
+    df = crawl_indiv_stock_price_history(2337, '2016-01-01')
     print(df.head())
     df.to_csv('data.csv', index=False, encoding='utf_8_sig')
